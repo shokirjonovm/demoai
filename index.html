@@ -1,220 +1,337 @@
 <!DOCTYPE html>
 <html lang="uz">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mento AI — Ta'lim uchun AI monitoring (Demo)</title>
+  <title>Mento AI — Inclusive Learning Demo</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- MediaPipe Hands (optional) -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
 </head>
-
 <body class="bg-gray-50 text-gray-900">
 
   <!-- HERO -->
-  <header
-    class="min-h-screen flex flex-col justify-center items-center text-center p-8 bg-gradient-to-b from-indigo-700 to-indigo-500 text-white">
-    <h1 class="text-5xl md:text-6xl font-extrabold mb-4">Mento AI</h1>
+  <header class="min-h-screen flex flex-col justify-center items-center text-center p-8 bg-gradient-to-b from-indigo-700 to-indigo-500 text-white">
+    <h1 class="text-5xl md:text-6xl font-extrabold mb-4">Mento AI — Inclusive Learning</h1>
     <p class="text-lg md:text-2xl max-w-3xl">
-      Ta'lim jarayonini real-time AI monitoring va avtomatik tushuntirish bilan optimallashtiramiz.
-      360° stream, gesture recognition va AI Re-Explain Mode yordamida dars samaradorligini oshiramiz.
+      Ta'limda hamma uchun imkoniyat: ovozdan matnga, matndan ovozga va qo‘l harakati bilan boshqariladigan interaktiv doska.
     </p>
-
     <div class="mt-8 flex gap-4">
-      <a href="#problem" class="bg-white/20 px-6 py-3 rounded-lg hover:bg-white/30">Batafsil</a>
+      <a href="#voice-to-text" class="bg-white/20 px-6 py-3 rounded-lg hover:bg-white/30">Boshlash</a>
       <a href="#demo" class="bg-white text-indigo-700 px-6 py-3 rounded-lg font-semibold">Demo sahifa</a>
     </div>
   </header>
 
-  <!-- PROBLEM → SOLUTION -->
-  <section id="problem" class="py-16 px-6 max-w-5xl mx-auto">
-    <h2 class="text-3xl font-bold mb-6 text-center">Muammo → Yechim</h2>
+  <!-- PROBLEM/SOLUTION (short) -->
+  <section id="problem" class="py-12 px-6 max-w-5xl mx-auto">
+    <h2 class="text-3xl font-bold mb-4 text-center">Muammo → Yechim</h2>
+    <p class="text-center text-gray-700">
+      Ta'limda eshitish yoki ko‘rish bilan muammosi bo‘lgan o‘quvchilar uchun darsni tushunish qiyin bo‘lishi mumkin.
+      Mento AI — Voice→Text, Text→Voice va Gesture Recognition orqali inklyuziv o‘qitishni qo‘llab-quvvatlaydi.
+    </p>
+  </section>
 
-    <div class="grid md:grid-cols-2 gap-8">
-      <div class="bg-white shadow rounded-lg p-6">
-        <h3 class="text-xl font-semibold mb-3">Muammo (ta'limda)</h3>
-        <ul class="list-disc ml-5 text-gray-700 space-y-2">
-          <li>O'quvchilar darsda e'tiborini yo'qotadi yoki aktiv qatnashmaydi.</li>
-          <li>O'qituvchi barcha o'quvchilarni real-time kuzata olmaydi.</li>
-          <li>Qiyin tushunilgan mavzularni darhol qayta tushuntirish imkoniyati yo‘q.</li>
-        </ul>
+  <!-- VOICE TO TEXT -->
+  <section id="voice-to-text" class="py-12 px-6 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-4">1️⃣ Voice → Text (Ovozdan matnga)</h2>
+      <p class="text-gray-700 mb-4">
+        Ushbu bo‘lim o‘qituvchining nutqini real-time matnga aylantiradi — eshitishda qiyinchilik ko‘radigan bolalar uchun subtitr.
+        Demo: brauzerning SpeechRecognition (agar qo‘llab-quvvatlasa) dan foydalanadi. Productionda Whisper/Google STT yoki AssemblyAI ishlatiladi.
+      </p>
+
+      <div class="p-4 bg-gray-50 rounded shadow">
+        <p class="mb-2 font-semibold">Demo: Brauzer STT (klik qilib gapiring)</p>
+        <div class="flex gap-2">
+          <button id="startStt" class="px-4 py-2 bg-green-600 text-white rounded">Start (gapirish)</button>
+          <button id="stopStt" class="px-4 py-2 bg-red-600 text-white rounded">Stop</button>
+        </div>
+        <div id="sttText" class="mt-4 p-3 bg-white border rounded min-h-[80px]"></div>
+        <p class="mt-2 text-sm text-gray-500">
+          Production: Whisper / Google STT uchun audio blobni backendga yuboring (server key required).
+        </p>
       </div>
 
-      <div class="bg-white shadow rounded-lg p-6">
-        <h3 class="text-xl font-semibold mb-3">Mento AI — Yechim</h3>
-        <p class="text-gray-700">
-          360° kamera va speech-to-text orqali sinfni real-time kuzatamiz, gesture va attention tracking bilan
-          qo‘l ko‘targan yoki e'tibori pasaygan o‘quvchilarni aniqlaymiz. AI Re-Explain Mode orqali o‘quvchiga
-          mavzuni sodda tilda qayta tushuntiramiz. O‘qituvchiga dashboardda live stats va heatmap ko‘rsatiladi.
+      <h3 class="mt-6 font-semibold">Tavsiyalar (Production)</h3>
+      <ul class="list-disc ml-6 text-gray-700">
+        <li>OpenAI Whisper (batch yoki streaming) — aniq transkript</li>
+        <li>Google Speech-to-Text — real-time subtitrlar</li>
+        <li>AssemblyAI — audio segment va speaker diarization</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- TEXT TO VOICE -->
+  <section id="text-to-voice" class="py-12 px-6 bg-gray-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-4">2️⃣ Text → Voice (Matndan ovozga)</h2>
+      <p class="text-gray-700 mb-4">
+        Matnni tabiiy ovozga aylantirish — ko‘rish qiyinligi bo‘lgan o‘quvchilar uchun. Demo brauzer speechSynthesis bilan ishlaydi.
+        Productionda ElevenLabs / Amazon Polly / Google TTS yoki Azure ishlatiladi.
+      </p>
+
+      <div class="p-4 bg-white rounded shadow">
+        <textarea id="ttsText" class="w-full p-2 border rounded" rows="4" placeholder="Matnni shu yerga yozing...">Assalomu alaykum, Mento AI demo — bu matndan ovozga misol.</textarea>
+        <div class="mt-3 flex gap-2">
+          <button onclick="speakText()" class="px-4 py-2 bg-indigo-600 text-white rounded">O‘qib berish (brauzer)</button>
+          <button onclick="stopSpeak()" class="px-4 py-2 bg-gray-400 text-black rounded">To‘xtatish</button>
+        </div>
+        <p class="mt-2 text-sm text-gray-500">
+          Production: ElevenLabs API bilan o‘qituvchining ovozini klonlash (server orqali).
         </p>
       </div>
     </div>
   </section>
 
-  <!-- DEMO / FEATURES -->
-  <section id="demo" class="py-16 px-6 bg-gray-100">
-    <div class="max-w-5xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6 text-center">Dastlabki demo — asosiy funksiyalar</h2>
-
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="bg-white p-5 rounded shadow">
-          <h4 class="font-semibold mb-2">360° Live Stream</h4>
-          <p class="text-sm text-gray-600">Sinfni real-time kuzatish, stream orqali ma'lumot yig'ish.</p>
-        </div>
-        <div class="bg-white p-5 rounded shadow">
-          <h4 class="font-semibold mb-2">Gesture Recognition</h4>
-          <p class="text-sm text-gray-600">Qo‘l ko‘targan o‘quvchilarni aniqlash (signal sifatida).</p>
-        </div>
-        <div class="bg-white p-5 rounded shadow">
-          <h4 class="font-semibold mb-2">Speech-to-Text</h4>
-          <p class="text-sm text-gray-600">O'qituvchi so'zlarini transkriptlash va avtomatik analitika.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ROADMAP -->
-  <section id="roadmap" class="py-16 px-6 max-w-6xl mx-auto">
-    <h2 class="text-3xl font-bold mb-8 text-center">Yo‘l xaritasi</h2>
-
-    <div class="grid md:grid-cols-4 gap-6 text-center">
-      <div class="p-6 bg-white rounded shadow">
-        <h3 class="font-semibold text-xl mb-2">1️⃣ Idea</h3>
-        <p class="text-sm text-gray-600">Ta'limdagi muammolarni aniqlash, o'qituvchilar va o'quvchilar bilan suhbat.
-          Mento AI konsepti.</p>
-      </div>
-      <div class="p-6 bg-white rounded shadow">
-        <h3 class="font-semibold text-xl mb-2">2️⃣ Prototype</h3>
-        <p class="text-sm text-gray-600">Basic demo: 360° kamera + mikrofon, gesture recognition, speech-to-text,
-          real-time monitoring.</p>
-      </div>
-      <div class="p-6 bg-white rounded shadow">
-        <h3 class="font-semibold text-xl mb-2">3️⃣ MVP</h3>
-        <p class="text-sm text-gray-600">Teacher Dashboard, AI Re-Explain Mode, Student Attention Tracking, edge device
-          integratsiyasi.</p>
-      </div>
-      <div class="p-6 bg-white rounded shadow">
-        <h3 class="font-semibold text-xl mb-2">4️⃣ Launched</h3>
-        <p class="text-sm text-gray-600">Beta testing, feedback bilan yaxshilash, subscription / pilot model va
-          kengaytirish.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- IMPLEMENTATION PLAN -->
-  <section id="plan" class="py-16 px-6 bg-white">
-    <div class="max-w-5xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6 text-center">Amalga oshirish rejasi</h2>
-
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="p-6 bg-gray-50 rounded shadow">
-          <h4 class="font-semibold mb-3">Texnologiyalar</h4>
-          <ul class="list-disc ml-5 text-gray-700 space-y-1">
-            <li>Frontend: HTML, Tailwind CSS, Vanilla JS (demo)</li>
-            <li>Backend (keyinchalik): Node.js / Laravel + WebSocket / REST API</li>
-            <li>AI: OpenAI (GPT) for Re-Explain; Speech-to-Text (Whisper / Browser STT)</li>
-            <li>CV / Edge: Python, OpenCV, TensorFlow / PyTorch, Raspberry Pi / Jetson</li>
-          </ul>
-        </div>
-
-        <div class="p-6 bg-gray-50 rounded shadow">
-          <h4 class="font-semibold mb-3">AI vositalari va yechimlar</h4>
-          <ul class="list-disc ml-5 text-gray-700 space-y-1">
-            <li>OpenAI GPT — matnni qayta tushuntirish, savollarga javob</li>
-            <li>Whisper yoki brauzer STT — nutqni matnga aylantirish</li>
-            <li>Pretrained CV model — gesture recognition va attention estimation</li>
-            <li>Edge deploy — Raspberry Pi / Jetson + kamera</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TEAM -->
-  <section id="team" class="py-16 px-6 bg-gray-100">
+  <!-- GESTURE RECOGNITION -->
+  <section id="gesture" class="py-12 px-6 bg-white">
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold mb-6 text-center">Jamoa (2 kishi)</h2>
+      <h2 class="text-2xl font-bold mb-4">3️⃣ Hand Gesture Recognition (Qo‘l harakati tanish)</h2>
+      <p class="text-gray-700 mb-4">
+        Qo‘l ko‘targan o‘quvchini aniqlash yoki gesture orqali doska boshqaruvi. Demo uchun MediaPipe Hands ishlatiladi.
+      </p>
 
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="bg-white rounded shadow p-6 text-center">
-          <img src="IMG_4014.png" alt="Muhammad Sodiq" class="w-28 h-28 rounded-full mx-auto mb-4" />
-          <h3 class="font-semibold text-xl">Muhammad Sodiq Shokirjonov</h3>
-          <p class="text-gray-600">Frontend Developer & AI Integrator</p>
-          <p class="text-sm mt-2 text-gray-700">HTML, CSS, JS, AI integratsiya, demo prototyping</p>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="p-4 bg-gray-50 rounded shadow">
+          <video id="gestureVideo" class="w-full rounded" autoplay playsinline muted></video>
+          <canvas id="gestureCanvas" class="w-full mt-2 rounded border"></canvas>
         </div>
 
-        <div class="bg-white rounded shadow p-6 text-center">
-          <img src="photo_2025-11-29_22-17-03.jpg" alt="Sherik" class="w-28 h-28 rounded-full mx-auto mb-4" />
-          <h3 class="font-semibold text-xl">Yodgorbek Musayev</h3>
-          <p class="text-gray-600">AI CEO / Project Manager</p>
-          <p class="text-sm mt-2 text-gray-700">Chatbotlar, to‘lov tizimlari (GoPay), Shopify integratsiyalari
-          </p>
+        <div class="p-4 bg-white rounded shadow">
+          <p class="font-semibold">Qanday ishlaydi (demo):</p>
+          <ol class="list-decimal ml-6 text-gray-700 mt-2">
+            <li>Kamera ruxsatini bering.</li>
+            <li>MediaPipe hands model kamera framelarini tahlil qiladi.</li>
+            <li>Agar qo‘l ko‘tarlgan bo‘lsa — UI da indikator chiqariladi.</li>
+          </ol>
+          <p id="gestureStatus" class="mt-4 text-green-600 font-semibold">Status: tayyor</p>
         </div>
+      </div>
+
+      <p class="mt-4 text-sm text-gray-500">
+        Production: OpenCV + TensorFlow (yoki MediaPipe) bilan edge-device (Raspberry Pi / Jetson) deploy tavsiya etiladi.
+      </p>
+    </div>
+  </section>
+
+  <!-- SMART BOARD INTEGRATION -->
+  <section id="smart-board" class="py-12 px-6 bg-gray-100">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold mb-4">4️⃣ Smart Board Integration (Interaktiv doska)</h2>
+      <p class="text-gray-700 mb-4">
+        Barcha tizimlar (STT, TTS, Gesture) bitta interfeysda birlashadi — o‘qituvchi yoki admin real-time statistik va vizualizatsiyani ko‘radi.
+      </p>
+
+      <div class="bg-white p-4 rounded shadow">
+        <p class="font-semibold">Demo dashboard (mock):</p>
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+          <div class="p-3 border rounded">
+            <h4 class="font-semibold">Live attention</h4>
+            <div class="text-3xl mt-2">75%</div>
+            <p class="text-sm text-gray-500">O‘quvchilar e'tibor indeksi</p>
+          </div>
+          <div class="p-3 border rounded">
+            <h4 class="font-semibold">Raised hands</h4>
+            <div class="text-3xl mt-2">3</div>
+            <p class="text-sm text-gray-500">Hozir qo‘l ko‘tarilgan o‘quvchilar</p>
+          </div>
+          <div class="p-3 border rounded">
+            <h4 class="font-semibold">Live transcript</h4>
+            <div id="liveTranscript" class="text-sm mt-2 text-gray-700">—</div>
+            <p class="text-sm text-gray-500">O‘qituvchi nutqi transkripti</p>
+          </div>
+        </div>
+
+        <p class="mt-4 text-sm text-gray-600">
+          Texnologiyalar: React + Node.js (dashboard), WebSocket (socket.io) orqali real-time data, Python/Edge service kameradan event yuboradi.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- FAQ -->
-  <section class="py-12 px-6 max-w-3xl mx-auto bg-white rounded shadow">
-    <h2 class="text-2xl font-bold mb-4 text-center">Savol–Javob (FAQ)</h2>
+  <!-- INCLUSIVE LEARNING EXPLANATION -->
+  <section id="inclusive" class="py-12 px-6 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold mb-4">🎯 Inclusive Learning (Inklyuziv ta'lim) haqida</h2>
+      <p class="text-gray-700 mb-4">
+        Inklyuziv ta'lim — bu har bir o‘quvchining o‘ziga xos imkoniyatlarini hisobga olgan holda o‘qitishni tashkil etishdir. Mento AI quyidagicha yordam beradi:
+      </p>
 
-    <div class="space-y-3">
-      <div class="border rounded p-3 cursor-pointer" onclick="toggleFAQ(1)">
-        <div class="flex justify-between items-center">
-          <strong>Mento AI sinfda qanday ishlaydi?</strong>
-          <span id="ficon1">+</span>
-        </div>
-        <p id="f1" class="hidden mt-2 text-gray-600">360° kamera va ML modellar orqali gesture va attention tracking
-          amalga oshiriladi; AI kerak bo‘lganda tushuntirish beradi.</p>
-      </div>
+      <ul class="list-disc ml-6 text-gray-700 space-y-2">
+        <li><strong>Ovozdan matnga</strong> (Voice→Text) — eshitish qiyinligi bo‘lganlar uchun dars yozuvi.</li>
+        <li><strong>Matndan ovozga</strong> (Text→Voice) — ko‘rish cheklovlari bo‘lganlar uchun darsni ovozli tarzda olish.</li>
+        <li><strong>Gesture yordam</strong> — qo‘l harakati orqali qatnashishni osonlashtirish (shy learners uchun).</li>
+        <li><strong>Real-time dashboard</strong> — o‘qituvchilar har bir o‘quvchining ehtiyojini tezda aniqlaydi va moslashadi.</li>
+      </ul>
 
-      <div class="border rounded p-3 cursor-pointer" onclick="toggleFAQ(2)">
-        <div class="flex justify-between items-center">
-          <strong>Bu demo qanday ma'lumotlarni yig‘adi?</strong>
-          <span id="ficon2">+</span>
-        </div>
-        <p id="f2" class="hidden mt-2 text-gray-600">Hozirgi demo faqat vizual va matn asosida simulyatsiya qiladi. Real
-          deployda video/attention statistikasi anonym tarzda yig‘iladi.</p>
-      </div>
-
-      <div class="border rounded p-3 cursor-pointer" onclick="toggleFAQ(3)">
-        <div class="flex justify-between items-center">
-          <strong>O‘quvchi maxfiyligi qanday ta'minlanadi?</strong>
-          <span id="ficon3">+</span>
-        </div>
-        <p id="f3" class="hidden mt-2 text-gray-600">Beta bosqichida barcha shaxsiy ma'lumotlar anonimlashtiriladi va
-          maktab bilan kelishilgan holda ishlanadi.</p>
-      </div>
+      <p class="mt-4 text-gray-700">
+        Natija: maktabda har bir o‘quvchi o‘z ehtiyojiga mos holda ta'lim oladi, undan o‘qituvchilar samaradorlikni oshiradi va erta xatoliklarni bartaraf etadi.
+      </p>
     </div>
   </section>
 
-
-  <!-- FOOTER -->
+  <!-- CONTACT/FOOTER -->
   <footer class="bg-indigo-900 text-white py-10">
     <div class="max-w-4xl mx-auto px-6 text-center">
+      <h3 class="text-xl font-semibold mb-3">Mento AI — Demo</h3>
+      <p class="text-sm text-indigo-300 mb-4">Murojaat: example@mento.ai</p>
       <p class="mt-6 text-sm text-indigo-300">© 2025 Mento AI — Demo</p>
     </div>
   </footer>
 
-  <!-- SCRIPTS -->
+  <!-- SCRIPTS: STT / TTS / Gesture -->
   <script>
-    // FAQ toggle
-    function toggleFAQ(i) {
-      const ans = document.getElementById('f' + i);
-      const ic = document.getElementById('ficon' + i);
-      if (!ans) return;
-      if (ans.classList.contains('hidden')) {
-        ans.classList.remove('hidden');
-        ic.textContent = '-';
-      } else {
-        ans.classList.add('hidden');
-        ic.textContent = '+';
-      }
+    /* ---------------------------
+       Voice → Text (Browser demo)
+    ----------------------------*/
+    const startBtn = document.getElementById('startStt');
+    const stopBtn = document.getElementById('stopStt');
+    const sttText = document.getElementById('sttText');
+
+    let recognition;
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.lang = 'uz-UZ'; // yoki 'ru-RU' / 'en-US'
+      recognition.interimResults = true;
+      recognition.continuous = true;
+
+      recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          transcript += event.results[i][0].transcript;
+        }
+        sttText.textContent = transcript;
+        // Update live transcript in smart board mock
+        const live = document.getElementById('liveTranscript');
+        if (live) live.textContent = transcript;
+      };
+
+      recognition.onerror = (e) => {
+        console.error('STT error', e);
+      };
+    } else {
+      sttText.textContent = 'Brauzeringiz SpeechRecognition ni qo‘llab-quvvatlamaydi.';
+      startBtn.disabled = true;
+      stopBtn.disabled = true;
     }
 
+    startBtn?.addEventListener('click', () => {
+      if (recognition) recognition.start();
+    });
+    stopBtn?.addEventListener('click', () => {
+      if (recognition) recognition.stop();
+    });
+
+    /* ---------------------------
+       Text → Voice (Browser demo)
+    ----------------------------*/
+    function speakText() {
+      const t = document.getElementById('ttsText').value;
+      if (!t) return;
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(t);
+        // utter.lang = 'uz-UZ'; // brauzer til qo‘llab-quvvatlashiga qarab o‘zgartiring
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert('Brauzeringiz speechSynthesis ni qo‘llab-quvvatlamaydi.');
+      }
+    }
+    function stopSpeak() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    }
+
+    /* ---------------------------
+       Gesture Recognition (MediaPipe Hands demo)
+    ----------------------------*/
+    const videoElement = document.getElementById('gestureVideo');
+    const canvasElement = document.getElementById('gestureCanvas');
+    const canvasCtx = canvasElement.getContext('2d');
+    const gestureStatus = document.getElementById('gestureStatus');
+
+    // Resize canvas to video size helper
+    function resizeCanvasToVideo() {
+      canvasElement.width = videoElement.videoWidth || 640;
+      canvasElement.height = videoElement.videoHeight || 480;
+    }
+
+    if (window.navigator.mediaDevices && window.navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+        videoElement.srcObject = stream;
+        videoElement.onloadeddata = () => {
+          resizeCanvasToVideo();
+        };
+      }).catch((err) => {
+        console.error('Camera access denied:', err);
+        gestureStatus.textContent = 'Kamera ruxsati kerak';
+        gestureStatus.classList.remove('text-green-600');
+        gestureStatus.classList.add('text-red-600');
+      });
+    } else {
+      gestureStatus.textContent = 'Kamera mavjud emas yoki brauzer qo‘llab-quvvatlamaydi.';
+    }
+
+    // Initialize MediaPipe Hands if available
+    if (window.Hands) {
+      const hands = new Hands({
+        locateFile: (file) => {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+        }
+      });
+
+      hands.setOptions({
+        maxNumHands: 2,
+        modelComplexity: 1,
+        minDetectionConfidence: 0.6,
+        minTrackingConfidence: 0.5
+      });
+
+      hands.onResults((results) => {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+        if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+          for (const landmarks of results.multiHandLandmarks) {
+            drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, { color: '#00FF00', lineWidth: 2 });
+            drawLandmarks(canvasCtx, landmarks, { color: '#FF0000', lineWidth: 1 });
+          }
+          // simple indicator: if any hand detected -> "Qo'l ko'targan"
+          gestureStatus.textContent = 'Qo\'l aniqlanmoqda — mavjud';
+          gestureStatus.classList.remove('text-red-600');
+          gestureStatus.classList.add('text-green-600');
+        } else {
+          gestureStatus.textContent = 'Qo\'l topilmadi';
+          gestureStatus.classList.remove('text-green-600');
+          gestureStatus.classList.add('text-red-600');
+        }
+        canvasCtx.restore();
+      });
+
+      const camera = new Camera(videoElement, {
+        onFrame: async () => {
+          await hands.send({ image: videoElement });
+        },
+        width: 640,
+        height: 480
+      });
+      camera.start();
+    } else {
+      console.warn('MediaPipe Hands not available in this environment.');
+      document.getElementById('gestureStatus').textContent = 'Gesture demo mavjud emas (MediaPipe yuklanmadi).';
+    }
+
+    /* ---------------------------
+       Production integration notes
+    ----------------------------*/
+    // 1) Voice→Text (Whisper): send audio Blob to backend -> call OpenAI Whisper endpoint -> return transcript
+    // 2) Text→Voice (ElevenLabs): send text to server -> call ElevenLabs TTS -> stream audio back to client
+    // 3) Gesture: run lightweight model on edge (Jetson/RPi) and emit events to server via WebSocket
+    // 4) Smart Board: central server (Node.js) aggregates events via WebSocket and pushes to dashboard clients
+    // IMPORTANT: store all API keys on server (not in frontend). Use HTTPS and auth for school deployment.
 
   </script>
 
 </body>
-
-
 </html>
